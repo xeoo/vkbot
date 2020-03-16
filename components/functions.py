@@ -42,10 +42,12 @@ class ShrinkedFuncs(object):
 				message=text,
 				random_id=get_random_id()
 			)
+			return
 		if not user_id is None:
 			self.api.messages.send(
-				chat_id=user_id,
+				user_id=user_id,
 				message=text,
 				random_id=get_random_id()
 			)
+			return
 		return

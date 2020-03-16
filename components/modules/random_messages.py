@@ -1,10 +1,12 @@
 import random
 from vk_api.utils import get_random_id
+from ..functions import is_admin, load_json, save_json, ShrinkedFuncs
 
 class RandMessages(object):
 	def __init__(self, api):
 		self.api = api
 
+		self.shrinks = ShrinkedFuncs(self.api)
 		self.words = {}
 		return
 
@@ -33,20 +35,16 @@ class RandMessages(object):
 				self.words[peer_id] = {
 					"words": [],
 					"max_messages_helded": self.api.messages.getConversationMembers\
-						(peer_id=peer_id)["count"],
+						(peer_id=peer_id+2000000000)["count"],
 					"messages_helded": 0
 				}
-				self.api.messages.send(
-					chat_id=peer_id,
-					message=message_text,
-					random_id=get_random_id()
-				)
+				self.shrinks.answer(chat_id=peer_id, text=message_text)
 			return
 		else:
 			self.words[peer_id] = {
 				"words": [],
 				"max_messages_helded": self.api.messages.getConversationMembers\
-					(peer_id=peer_id)["count"],
+					(peer_id=peer_id+2000000000)["count"],
 				"messages_helded": 0
 			}
 		return

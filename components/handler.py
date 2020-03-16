@@ -43,10 +43,10 @@ class Bot(object):
 		if event.from_chat:
 			if self.text[0] == self.prefix:
 				# [Исполнение команд (какая команда, такой и метод: !nmap -> self.nmap)]
-				try:
-					eval(f"self.{self.text[1::].split()[0]}()")
-				except AttributeError:
-					self.exceptions.CommandNotFoundError(self.peer_id)
+				# try:
+				eval(f"self.{self.text[1::].split()[0]}()")
+				# except AttributeError:
+					# self.exceptions.CommandNotFoundError(self.peer_id)
 				return
 			else:
 				try:
@@ -77,7 +77,7 @@ class Bot(object):
 			return
 		nmap_object = nmap.Nmap(self.text[1::].split()[1])
 		response = nmap_object.start()
-		if response is None:
+		if response is None or not bool(len(response.strip())):
 			self.exceptions.UnknownWarn(self.peer_id)
 			return
 		self.shrinks.answer(chat_id=self.peer_id, text=response)
