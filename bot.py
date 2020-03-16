@@ -1,4 +1,3 @@
-import requests
 import vk_api
 from components import functions, handler
 from vk_api.bot_longpoll import VkBotLongPoll
