@@ -43,10 +43,10 @@ class Bot(object):
 		if event.from_chat:
 			if self.text[0] == self.prefix:
 				# [Исполнение команд (какая команда, такой и метод: !nmap -> self.nmap)]
-				# try:
-				eval(f"self.{self.text[1::].split()[0]}()")
-				# except AttributeError:
-					# self.exceptions.CommandNotFoundError(self.peer_id)
+				try:
+					eval(f"self.{self.text[1::].split()[0]}()")
+				except AttributeError:
+					self.exceptions.CommandNotFoundError(self.peer_id)
 				return
 			else:
 				try:
@@ -85,21 +85,19 @@ class Bot(object):
 
 	# [Методы администрирования]
 	def kick(self):
-		print(self.admins)
-		print(self.from_id)
 		if not is_admin(self.from_id, self.admins):
 			self.exceptions.UserNotIsAdminWarn(self.peer_id)
 			return
 		if len(self.text.split()) != 2:
 			self.exceptions.CommandNotExistsWithTemplateWarn(self.peer_id)
 			return
-		response = re.match(r"\[id\d{1,}\|\w{1,}\]", self.text[1::].split()[1].replace("*", "").replace("@", ""))
+		response = re.match(r"\[(id|club)\d{1,}\|\w{1,}\]", self.text[1::].split()[1].replace("*", "").replace("@", ""))
 		if response is None:
 			self.exceptions.MentionNotFoundWarn(self.peer_id)
 			return
 		user_id = re.findall(r"(\d+)", self.text[1::].split()[1])
 		try:
-			if not user_id in self.admins:
+			if not user_id[0] in self.admins:
 				self.api.messages.removeChatUser(
 					chat_id=self.peer_id,
 					user_id=user_id[0]
@@ -109,7 +107,7 @@ class Bot(object):
 				KickIsAdminError(self.peer_id)
 		except exceptions.ApiError:
 			# Нужен доступ админа
-			self.exceptions.KickIsAdminError(self.peer_id)
+			pass
 		return
 
 	def add_admin(self):
@@ -124,7 +122,7 @@ class Bot(object):
 			self.exceptions.MentionNotFoundWarn(self.peer_id)
 			return
 		user_id = re.findall(r"(\d+)", self.text[1::].split()[1])
-		self.config["admins"].append(user_id[0])
+		self.config["admins"].append(str(user_id[0]))
 		self.shrinks.answer(chat_id=self.peer_id, text="Администратор добавлен")
 		save_json(self.config)
 		return
@@ -142,7 +140,7 @@ class Bot(object):
 			return
 		user_id = re.findall(r"(\d+)", self.text[1::].split()[1])
 		try:
-			self.config["admins"].remove(user_id[0])
+			self.config["admins"].remove(str(user_id[0]))
 			self.shrinks.answer(chat_id=self.peer_id, text="Администратор удален")
 		except ValueError:
 			self.exceptions.AdminNotFoundError(self.peer_id)
