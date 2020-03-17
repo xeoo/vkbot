@@ -4,7 +4,7 @@ from vk_api import exceptions
 
 # [Необходимые модули]
 from .errors import Exceptions
-from .functions import is_admin, load_json, save_json, ShrinkedFuncs
+from .functions import is_admin, load_json, is_valid_command, save_json, ShrinkedFuncs
 import re
 
 # [Подключение модулей бота из папки 'modules']
@@ -41,7 +41,7 @@ class Bot(object):
 		self.peer_id = event.message.peer_id-2000000000
 		self.from_id = event.message.from_id
 		if event.from_chat:
-			if self.text[0] == self.prefix:
+			if self.text[0] == self.prefix and is_valid_command(self.text[1::].split()[0]):
 				# [Исполнение команд (какая команда, такой и метод: !nmap -> self.nmap)]
 				try:
 					eval(f"self.{self.text[1::].split()[0]}()")
@@ -95,13 +95,19 @@ class Bot(object):
 		if response is None:
 			self.exceptions.MentionNotFoundWarn(self.peer_id)
 			return
-		user_id = re.findall(r"(\d+)", self.text[1::].split()[1])
+		member_id = re.findall(r"(\d+)", self.text[1::].split()[1])
 		try:
-			if not user_id[0] in self.admins:
-				self.api.messages.removeChatUser(
-					chat_id=self.peer_id,
-					user_id=user_id[0]
-				)
+			if not member_id[0] in self.admins:
+				if "club" in self.text[1::].split()[1].split("|")[0]:
+					self.api.messages.removeChatUser(
+						chat_id=self.peer_id,
+						member_id=f"-{member_id[0]}"
+					)
+				else:
+					self.api.messages.removeChatUser(
+						chat_id=self.peer_id,
+						member_id=member_id[0]
+					)
 				self.shrinks.answer(chat_id=self.peer_id, text="ГАТОВА ЕПТА!")
 			else:
 				KickIsAdminError(self.peer_id)

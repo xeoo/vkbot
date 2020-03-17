@@ -1,5 +1,6 @@
 import json
 from vk_api.utils import get_random_id
+import re
 
 default_json = {
 	"prefix": "",
@@ -28,6 +29,9 @@ def is_admin(user_id, admin_list):
 	if str(user_id) in admin_list:
 		return True
 	return False
+
+def is_valid_command(command):
+	return not re.match(r"^\w+$", command) is None
 
 
 class ShrinkedFuncs(object):
