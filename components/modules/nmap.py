@@ -10,7 +10,7 @@ class Nmap(object):
 		temp = self._host_valid()
 		if not temp:
 			return
-		return os.popen(f"nmap {self.host}").read()
+		return os.popen(f"nmap -Pn {self.host}").read()
 
 	def _host_valid(self):
 		temp = re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", self.host)
