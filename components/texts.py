@@ -4,7 +4,8 @@ HELP =  "<prefix>help - этот текст\n"\
 		"Администрирование:\n"\
 		"<prefix>kick <mention> - кикнуть участника беседы\n"\
 		"<prefix>add_admin <mention> - добавить администратора\n"\
-		"<prefix>remove_admin <mention> - разжаловать администратора\n"
+		"<prefix>remove_admin <mention> - разжаловать администратора\n"\
+		"<prefix>everyone <text> - написать всем (с упоминанием)\n"
 
 ADMIN_ADDED = "Администратор добавлен"
 ADMIN_REMOVED = "Администратор разжалован"
