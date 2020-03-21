@@ -11,6 +11,7 @@ from . import texts
 # [Подключение модулей бота из папки 'modules']
 from .modules import nmap
 from .modules import random_messages
+from .modules import invocation
 
 
 class Bot(object):
@@ -79,6 +80,16 @@ class Bot(object):
 			self.exceptions.UnknownWarn(self.peer_id)
 			return
 		self.shrinks.answer(chat_id=self.peer_id, text=response)
+		return
+
+	def everyone(self):
+		# это админ? (кто отправил команду): нет - ошибка
+		if not is_admin(self.from_id, self.admins):
+			self.exceptions.UserNotIsAdminWarn(self.peer_id)
+			return
+		# запускаем модуль
+		invocation_object = invocation.Invocation(self.api)
+		invocation_object.start([self.text, self.peer_id, self.from_id])
 		return
 
 	# [Методы администрирования]
