@@ -73,6 +73,7 @@ class Bot(object):
 		if len(self.text.split()) != 2:
 			self.exceptions.CommandNotExistsWithTemplateWarn(self.peer_id)
 			return
+		self.shrinks.answer(chat_id=self.peer_id, text="Ожидайте, занимает много времени (проверяются все порты)")
 		# запускаем модуль сканирования (там же он проверяет валидность хоста)
 		nmap_object = nmap.Nmap(self.text[1::].split()[1])
 		response = nmap_object.start()
